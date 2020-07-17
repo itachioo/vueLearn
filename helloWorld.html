@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>vue hello world</title>
+		<style>
+			.empty {
+				border-color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<input type="text" v-bind:class= "{empty: !count}" v-model="value" />
+			<input type="button" value="发送" v-on:click="send" />
+			<div v-if="value">value的值是：{{value}}</div>
+			<div v-if="value">字数：{{count}}</div>
+		</div>
+		<script src='./js/vue.js'></script>
+		<script>
+			var app = new Vue({
+				el:'#app',
+				data:function() {
+					return {value:''}
+				},
+				methods:{
+					send: function() {
+						if (this.value) {
+							alert('发送成功！');
+							this.value = ''
+						}
+						else {
+							alert('请输入值！')
+						}
+					}
+				},
+				computed: {
+					count:function() {
+						return this.value.length
+					}
+				}
+			})
+		</script>
+</html>

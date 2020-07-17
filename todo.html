@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>vue todo</title>
+		<style>
+			.completed {
+				text-decoration: line-through;
+			}
+			.selected {
+				color: red;
+			}
+			.empty {
+				border-color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="js/vue.js"></script>
+		<div id="todo-app">
+			<div>
+				<input type="button" value="全部标为完成" />
+				<input type="text"  placeholder="添加 todo"  v-model="value" @keyup.enter="addTodo" v-on:keyup.enter="onEnter"/>
+			</div>
+			<!-- todo list -->
+			<!-- 无序列表 -->
+			<ul>  
+				<li v-for="todo in todos" :key="todo.id">
+					<span :class="{completed: todo.completed}"> {{todo.title}}</span>
+					<input type="button" value="标为完成" @click="markAsCompleted(todo)" />
+					<input type="button" value="删除">
+					<input type="text" value="编辑 todo..."/>
+				</li>
+			</ul>
+			<div>
+			    <span>剩余 3 项未完成 ---</span>
+			    <span>筛选：
+			      <input type="button" class="selected" value="全部">
+			      <input type="button" value="进行中">
+			      <input type="button" value="已完成">
+			      <input type="button" value="清除已完成">
+			      <input type="button" value="清除全部">
+			    </span>
+			  </div>
+		</div>
+		
+		<script>
+			let id=0;
+			let oldVal = '';
+			var app = new Vue({
+				el:"#todo-app",
+				data: function(){
+					return {
+						todos:[],
+						value:''
+					}
+				},
+				methods:{
+					addTodo:function() {
+						if(this.count) {
+							this.todos.push({id:id++, title: this.value,completed:false});
+							oldVal = this.value;  //刷新value之前先缓存下来，用来onEnter()检测是否为空
+							this.value = ''
+						}
+						
+					},
+					onEnter:function(){
+						if(!oldVal) {
+							alert("请输入内容！！！");
+						}
+						oldVal = ''
+					},
+					markAsCompleted: function(todo){
+						todo.completed = true;
+					}
+				},
+				computed:{
+					count:function(){
+						return this.value.length
+					}
+				}
+			})	
+		</script>
+	</body>
+</html>

@@ -19,15 +19,14 @@
 		<script src="js/vue.js"></script>
 		<div id="todo-app">
 			<div>
-				<input type="button" value="全部标为完成" />
-				<input type="text"  placeholder="添加 todo"  v-model="value" @keyup.enter="addTodo" v-on:keyup.enter="onEnter"/>
+				<input type="text"  placeholder="添加 todo"  v-model="value" @keyup.enter="addTodo"/>
 			</div>
 			<!-- todo list -->
 			<!-- 无序列表 -->
 			<ul>  
 				<li v-for="todo in todos" :key="todo.id">
-					<span :class="{completed: todo.completed}"> {{todo.title}}</span>
-					<input type="button" value="标为完成" @click="markAsCompleted(todo)" />
+					<span>{{ todo.title }}</span>
+					<input v-else type="button" value="标为未完成"/>
 					<input type="button" value="删除">
 					<input type="text" value="编辑 todo..."/>
 				</li>
@@ -46,7 +45,7 @@
 		
 		<script>
 			let id=0;
-			let oldVal = '';
+			// let oldVal = '';
 			var app = new Vue({
 				el:"#todo-app",
 				data: function(){
@@ -57,28 +56,11 @@
 				},
 				methods:{
 					addTodo:function() {
-						if(this.count) {
-							this.todos.push({id:id++, title: this.value,completed:false});
-							oldVal = this.value;  //刷新value之前先缓存下来，用来onEnter()检测是否为空
-							this.value = ''
-						}
-						
-					},
-					onEnter:function(){
-						if(!oldVal) {
-							alert("请输入内容！！！");
-						}
-						oldVal = ''
-					},
-					markAsCompleted: function(todo){
-						todo.completed = true;
+						if(this.value === '') return;
+						this.todos.push({id:id++, title: this.value,completed:false});
+						this.value = ''
 					}
 				},
-				computed:{
-					count:function(){
-						return this.value.length
-					}
-				}
 			})	
 		</script>
 	</body>

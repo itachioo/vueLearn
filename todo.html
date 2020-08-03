@@ -21,15 +21,19 @@
 			<div>
 				<input type="text"  placeholder="添加 todo"  v-model="value" @keyup.enter="addTodo"/>
 			</div>
+			<div>
+				<input v-if="removedTodo" type="button" value="撤销" @click="restoreTodo(todo)">
+			</div>
 			<!-- todo list -->
 			<!-- 无序列表 -->
 			<ul>  
 				<li v-for="todo in todos" :key="todo.id">
-					<span :class="{completed: todo.completed}">{{ todo.title }}</span>
+					<span :class="{completed: todo.completed}"  @dblclick="editTodo(todo)">{{ todo.title }}</span>
 					<input v-if="!todo.completed" type="button" value="标为完成" @click="markAsCompleted(todo)"/>
 					<input v-if="todo.completed" type="button" value="标为未完成" @click="markAsUnCompleted(todo)" />
 					<input type="button" value="删除" @click="deleteTodo(todo)">
-					<input type="text" value="编辑 todo..."/>
+					<input v-if="editedTodo !== null" type="text" value="编辑 todo..." v-model="todo.title" @keyup.enter="editDone(todo)"
+					@keyup.esc="cancelEdit(todo)"/>
 				</li>
 			</ul>
 			<div>
@@ -53,7 +57,8 @@
 					return {
 						todos:[],
 						value:'',
-						removedTodo:null
+						removedTodo:null,//删除前记录状态，用户撤销删除
+						editedTodo:null //用于暂存编辑前的状态
 					}
 				},
 				methods:{
@@ -81,6 +86,16 @@
 						let restored = this.removedTodo.todo;
 						this.todos.splice(pos,0,restored);
 						this.removedTodo = null
+					},
+					editTodo:function(todo) {
+						this.editedTodo = {id:todo.id, title:todo.title}
+					},
+					editDone:function(todo) {
+						this.editedTodo = null
+					},
+					cancelEdit:function(todo) {
+						todo.title = this.editedTodo.title;
+						this.editedTodo = null
 					}
 				},
 			})	
